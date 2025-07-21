@@ -6,6 +6,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import com.ashu.blogapp.users.UserEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +34,7 @@ public class ArticleEntity {
     @CreatedDate
     private Date createdAt;
 
+    @ManyToOne
+    @JoinColumn(name="authorId",nullable = false)
+    private UserEntity author;
 }
