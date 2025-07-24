@@ -11,12 +11,14 @@ import com.ashu.blogapp.users.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+@Entity(name = "articles")
 @Getter
 @Setter
+@Builder
 @ToString
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ArticleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
