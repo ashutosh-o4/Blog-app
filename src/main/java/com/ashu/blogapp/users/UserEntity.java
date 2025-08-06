@@ -9,26 +9,35 @@ import lombok.*;
 @Entity(name = "users")
 @Getter
 @Setter
-@Builder
 @ToString
 @RequiredArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column( nullable = false)
+    @Column(nullable = false)
     private Long id;
-    @Column( nullable = false)
+
+    @Column(nullable = false)
     @NonNull
     private String username;
-    @Column( nullable = false)
+
+    @Column(nullable = false)
+    @NonNull
+    private String password;
+
+    @Column(nullable = false)
     @NonNull
     private String email;
-    @Column( nullable = true)
+
+    @Column(nullable = true)
     @Nullable
     private String bio;
-    @Column( nullable = true)
+
+    @Column(nullable = true)
     @Nullable
-    private String img;
+    private String image;
+
 }

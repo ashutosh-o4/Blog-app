@@ -16,7 +16,6 @@ import lombok.*;
 @Setter
 @Builder
 @ToString
-@RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CommentEntity {

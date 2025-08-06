@@ -1,4 +1,4 @@
-package com.ashu.blogapp.users;
+ package com.ashu.blogapp.users;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,22 @@ public class UsersService {
     }
 
     public UserEntity getUser(String username){
+        return usersRepository.findByUsername(username);
+    }
 
-        return UsersRepository.findByUsername(username);
+    public UserEntity loginUser(String username,String password){
+        var user=usersRepository.findByUsername(username);
+
+        if(user==null){
+            throw new UserNotFoundException(username);
+        }
+        //TODO:match password
+        return  user;
+    }
+
+    static class UserNotFoundException extends IllegalArgumentException{
+        public UserNotFoundException(String username){
+            super("User "+username+" not found.");
+        }
     }
 }
