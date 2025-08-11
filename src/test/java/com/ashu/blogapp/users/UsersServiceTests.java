@@ -1,27 +1,26 @@
 package com.ashu.blogapp.users;
 
 import com.ashu.blogapp.users.dtos.CreateUserRequest;
+import org.h2.engine.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class UsersServiceTests {
 
-    @Autowired
-    UsersService usersService;
+    @Autowired UsersService usersService;
+
+    @MockitoBean UsersRepository usersRepository;
+
     @Test
-    void can_create_users(){
-         var user=usersService.createUser(new CreateUserRequest(
-                "Ashu",
-                "Ashu2004",
-                "ashutosh@mail.com"));
-
+    void can_create_user(){
+        var user=usersService.createUser(new CreateUserRequest("john","john123","john@123"));
         Assertions.assertNotNull(user);
-        Assertions.assertEquals("Ashu",user.getUsername());
-
+        Assertions.assertEquals("john",user.getUsername());
     }
 }

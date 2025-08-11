@@ -1,12 +1,10 @@
 package com.ashu.blogapp.users.dtos;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Setter(AccessLevel.NONE)
+
 
 public class CreateUserRequest {
     @NonNull

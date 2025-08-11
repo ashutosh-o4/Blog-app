@@ -1,6 +1,7 @@
  package com.ashu.blogapp.users;
 
 import com.ashu.blogapp.users.dtos.CreateUserRequest;
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,8 +14,9 @@ public class UsersService {
 
     public UserEntity createUser (CreateUserRequest req){
         var user=UserEntity.builder().username(req.getUsername())
+                .password(req.getPassword()) //TODO: encrypt password
                 .email(req.getEmail())
-                .build()/*password(password)*/;
+                .build() ;
 
         return usersRepository.save(user);
     }
@@ -28,9 +30,8 @@ public class UsersService {
     }
 
     public UserEntity loginUser(String username,String password){
-        var user=usersRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
+        return usersRepository.findByUsername(username).orElseThrow(()->new UserNotFoundException(username));
         //TODO:match password
-        return  user;
     }
 
     public static class UserNotFoundException extends IllegalArgumentException{
