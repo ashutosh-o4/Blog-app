@@ -2,23 +2,24 @@
 
 import com.ashu.blogapp.users.dtos.CreateUserRequest;
 import lombok.NonNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsersService {
     private final UsersRepository usersRepository;
+    private final ModelMapper modelMapper;
 
-    UsersService(UsersRepository usersRepository){
-        this.usersRepository=usersRepository;
+    public UsersService(UsersRepository usersRepository, ModelMapper modelMapper) {
+        this.usersRepository = usersRepository;
+        this.modelMapper = modelMapper;
     }
 
     public UserEntity createUser (CreateUserRequest req){
-        var user=UserEntity.builder().username(req.getUsername())
-                .password(req.getPassword()) //TODO: encrypt password
-                .email(req.getEmail())
-                .build() ;
+        UserEntity newUser=modelMapper.map(req,UserEntity.class);
+        //TODO: encrypt and save password as well
 
-        return usersRepository.save(user);
+        return usersRepository.save(newUser);
     }
 
     public UserEntity getUser(String username){
