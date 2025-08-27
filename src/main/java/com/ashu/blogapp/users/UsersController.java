@@ -1,5 +1,6 @@
 package com.ashu.blogapp.users;
 
+import com.ashu.blogapp.security.JWTService;
 import com.ashu.blogapp.users.dtos.CreateUserRequest;
 import com.ashu.blogapp.users.dtos.UserResponse;
 import com.ashu.blogapp.users.dtos.LoginUserRequest;
@@ -17,38 +18,53 @@ public class UsersController {
 
     private final UsersService usersService;
     private final ModelMapper modelMapper;
+    private final JWTService jwtService;
 
-    public UsersController(UsersService usersService, ModelMapper modelMapper) {
+    public UsersController(UsersService usersService, ModelMapper modelMapper,JWTService  jwtService) {
         this.usersService = usersService;
         this.modelMapper = modelMapper;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("")
     ResponseEntity<UserResponse> signupUser(@RequestBody CreateUserRequest request){
         UserEntity savedUser=usersService.createUser(request);
         URI savedUserUri = URI.create("/users/"+savedUser.getId());
-
+        var userResponse=modelMapper.map(savedUser,UserResponse.class);
+        userResponse.setToken(
+                jwtService.createJwt(savedUser.getId())
+        );
         return ResponseEntity.created(savedUserUri)
-                .body(modelMapper.map(savedUser, UserResponse.class));
+                .body(userResponse);
     }
 
     @PostMapping("/login")
     ResponseEntity <UserResponse> loginUser(@RequestBody LoginUserRequest request){
         UserEntity savedUser=usersService.loginUser(request.getUsername(),request.getPassword());
-        return ResponseEntity.ok(modelMapper.map(savedUser, UserResponse.class));
+        var userResponse=modelMapper.map(savedUser,UserResponse.class);
+        userResponse.setToken(
+                jwtService.createJwt(savedUser.getId())
+        );
+        return ResponseEntity.ok(userResponse);
     }
 
     @ExceptionHandler({
-            UsersService.UserNotFoundException.class
+            UsersService.UserNotFoundException.class,
+            UsersService.InvalidCredentialsException.class
     })
-    ResponseEntity <ErrorResponse> handleUserNotFoundException(Exception ex){
+    ResponseEntity <ErrorResponse> handleUserException(Exception ex){
 
         String msg;
         HttpStatus status;
         if(ex instanceof UsersService.UserNotFoundException){
             msg=ex.getMessage();
             status=HttpStatus.NOT_FOUND;
-        } else{
+        }
+        else if(ex  instanceof UsersService.InvalidCredentialsException){
+            msg=ex.getMessage();
+            status=HttpStatus.UNAUTHORIZED;
+        }
+        else{
             status=HttpStatus.INTERNAL_SERVER_ERROR;
             msg="Something went wrong";
         }
